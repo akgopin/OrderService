@@ -1,18 +1,24 @@
 package com.aexp.order.service.controller;
 
+import com.aexp.order.service.controller.domain.Order;
+import com.aexp.order.service.controller.domain.Summary;
+import com.aexp.order.service.service.OrderService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 public class OrderController {
 
-    @RequestMapping(value = "/ping", method = RequestMethod.GET)
-    @ResponseStatus(HttpStatus.OK)
-    public String update() {
-        return "pong";
+    @Autowired
+    private OrderService orderService;
+
+    @RequestMapping(value = "/order", method = RequestMethod.POST)
+    @ResponseStatus(HttpStatus.CREATED)
+    public Summary receiveOrders(@RequestBody List<Order> orders) {
+        return orderService.generateSummary(orders);
     }
 
 }
