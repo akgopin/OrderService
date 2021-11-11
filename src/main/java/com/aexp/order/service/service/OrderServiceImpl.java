@@ -17,7 +17,7 @@ public class OrderServiceImpl implements OrderService {
     private productRepo productRepo;
 
     @Autowired
-    public  OrderServiceImpl(productRepo productRepo){
+    public OrderServiceImpl(productRepo productRepo) {
         this.productRepo = productRepo;
     }
 
@@ -25,15 +25,15 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Summary generateSummary(List<Order> orders) throws IllegalArgumentException {
         List<OrderSummary> orderSummaries = new ArrayList<>();
-        float cost = 0;
+        float totalCost = 0;
         for (Order order : orders) {
             product pro = productRepo.findProduct(order.getItem()).orElseThrow(IllegalArgumentException::new);
-            float price = order.getQuantity() * pro.getPrice();
-            OrderSummary orderSummary = new OrderSummary(price, pro.getName(), order.getQuantity());
-            cost += price;
+            float itemCost = order.getQuantity() * pro.getPrice();
+            OrderSummary orderSummary = new OrderSummary(pro.getPrice(), itemCost, pro.getName(), order.getQuantity());
+            totalCost += itemCost;
             orderSummaries.add(orderSummary);
 
         }
-        return new Summary(orderSummaries, cost);
+        return new Summary(orderSummaries, totalCost);
     }
 }

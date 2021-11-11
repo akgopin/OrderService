@@ -6,15 +6,15 @@ public class Summary {
 
 
     private List<OrderSummary> orders;
-    private float total;
+    private float orderTotal;
 
     public Summary(List<OrderSummary> orders, float total) {
         this.orders = orders;
-        this.total = total;
+        this.orderTotal = total;
     }
 
-    public float getTotal() {
-        return total;
+    public float getOrderTotal() {
+        return orderTotal;
     }
 
     public List<OrderSummary> getOrders() {

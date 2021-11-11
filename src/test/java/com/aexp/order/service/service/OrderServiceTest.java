@@ -22,8 +22,8 @@ public class OrderServiceTest {
         orders.add(new Order("orange", 10));
         orders.add(new Order("apple", 20));
         Summary summary = orderService.generateSummary(orders);
-        assertThat(summary.getOrders().get(0).getPrice(), equalTo(250.0F));
-        assertThat(summary.getOrders().get(1).getPrice(), equalTo(1200.0F));
+        assertThat(summary.getOrders().get(0).getPrice(), equalTo(25.0F));
+        assertThat(summary.getOrders().get(1).getPrice(), equalTo(60.0F));
         assertThat(summary.getOrders().size(), equalTo(2));
     }
 
