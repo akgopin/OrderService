@@ -4,11 +4,13 @@ public class product {
 
     private String name;
     private float price;
+    private offer offer;
 
 
-    public product(String name, float price) {
+    public product(String name, float price, offer offer) {
         this.name = name;
         this.price = price;
+        this.offer = offer;
     }
 
     public String getName() {
@@ -17,6 +19,10 @@ public class product {
 
     public float getPrice() {
         return price;
+    }
+
+    public offer getOffer() {
+        return offer;
     }
 
 

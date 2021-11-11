@@ -4,7 +4,6 @@ package com.aexp.order.service.controller;
 import com.aexp.order.service.controller.domain.Order;
 import com.aexp.order.service.controller.domain.OrderSummary;
 import com.aexp.order.service.controller.domain.Summary;
-import com.aexp.order.service.service.OrderService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,16 +24,11 @@ import com.aexp.order.service.OrderApplication;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
-import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebAppConfiguration
@@ -69,7 +63,7 @@ public class orderControllerTest {
                 .andReturn();
 
         List<OrderSummary> orderSummaries = new ArrayList<>();
-        orderSummaries.add(new OrderSummary(25, 250.0F, "orange", 10));
+        orderSummaries.add(new OrderSummary(25, 250.0F, "orange", 15));
         Summary summary = new Summary(orderSummaries, 250.0F);
 
         String content = result.getResponse().getContentAsString();
@@ -77,4 +71,5 @@ public class orderControllerTest {
         assertThat(content, equalTo(expectedContent));
 
     }
+
 }
