@@ -21,4 +21,9 @@ public class OrderController {
         return orderService.generateSummary(orders);
     }
 
+    @RequestMapping(value = "/order/{id}", method = RequestMethod.GET)
+    @ResponseStatus(HttpStatus.OK)
+    public List<Order> receiveOrders(@PathVariable int id) {
+        return orderService.getOrder(id);
+    }
 }

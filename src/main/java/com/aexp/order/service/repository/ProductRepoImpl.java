@@ -22,7 +22,7 @@ public class ProductRepoImpl implements productRepo {
     public Optional<product> findProduct(String productName) {
 
         product product = productMap.get(productName);
-        if (productMap.get(productName) != null) {
+        if (product != null) {
             return Optional.of(product);
         }
         return Optional.empty();

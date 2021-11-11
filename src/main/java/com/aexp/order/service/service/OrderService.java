@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface OrderService {
     Summary generateSummary(List<Order> orders) throws IllegalArgumentException;
+
+    List<Order> getOrder(Integer orderId) throws IllegalArgumentException;
 }

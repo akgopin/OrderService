@@ -8,6 +8,7 @@ import com.aexp.order.service.repository.productRepo;
 import com.aexp.order.service.domain.product;
 import com.aexp.order.service.controller.domain.OrderSummary;
 import com.aexp.order.service.domain.offer;
+import com.aexp.order.service.repository.OrderRepo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,10 +17,12 @@ import java.util.List;
 public class OrderServiceImpl implements OrderService {
 
     private productRepo productRepo;
+    private OrderRepo orderRepo;
 
     @Autowired
-    public OrderServiceImpl(productRepo productRepo) {
+    public OrderServiceImpl(productRepo productRepo, OrderRepo orderRepo) {
         this.productRepo = productRepo;
+        this.orderRepo = orderRepo;
     }
 
 
@@ -27,6 +30,7 @@ public class OrderServiceImpl implements OrderService {
     public Summary generateSummary(List<Order> orders) throws IllegalArgumentException {
         List<OrderSummary> orderSummaries = new ArrayList<>();
         float totalCost = 0;
+        int id = orderRepo.storeOrder(orders);
         for (Order order : orders) {
             product pro = productRepo.findProduct(order.getItem()).orElseThrow(IllegalArgumentException::new);
             float itemCost = calculateCostPerItem(order, pro);
@@ -37,7 +41,12 @@ public class OrderServiceImpl implements OrderService {
             orderSummaries.add(orderSummary);
 
         }
-        return new Summary(orderSummaries, totalCost);
+        return new Summary(orderSummaries, totalCost, id);
+    }
+
+    @Override
+    public List<Order> getOrder(Integer orderId) throws IllegalArgumentException {
+        return orderRepo.findOrder(orderId).orElseThrow(IllegalArgumentException::new);
     }
 
     private float getTotalCost(float totalCost, float itemCost) {

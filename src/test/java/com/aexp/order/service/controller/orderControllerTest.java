@@ -28,6 +28,7 @@ import java.util.List;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -42,7 +43,7 @@ public class orderControllerTest {
 
     @Inject
     protected WebApplicationContext webApplicationContext;
-    ;
+
 
     @Before
     public void init() {
@@ -64,10 +65,42 @@ public class orderControllerTest {
 
         List<OrderSummary> orderSummaries = new ArrayList<>();
         orderSummaries.add(new OrderSummary(25, 250.0F, "orange", 15));
-        Summary summary = new Summary(orderSummaries, 250.0F);
+
 
         String content = result.getResponse().getContentAsString();
-        String expectedContent = objectMapper.writeValueAsString(summary);
+        Summary actualSummary = objectMapper.readValue(content,Summary.class);
+        Summary expectedSummary = new Summary(orderSummaries, 250.0F, actualSummary.getId());
+        String expectedContent = objectMapper.writeValueAsString(expectedSummary);
+        assertThat(content, equalTo(expectedContent));
+
+    }
+
+    @Test
+    public void testGetOrder() throws Exception {
+        ObjectMapper objectMapper = new ObjectMapper();
+        Order order = new Order("orange", 10);
+        List<Order> orders = new ArrayList<>();
+        orders.add(order);
+        MvcResult result = mockMvc.perform(post("/order")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(orders)))
+                .andDo(print())
+                .andExpect(status().isCreated())
+                .andReturn();
+
+
+        String content = result.getResponse().getContentAsString();
+        Summary summary = objectMapper.readValue(content,Summary.class);
+
+        //Retrieving the order that was created and asserting on the response
+        MvcResult getOrder = mockMvc.perform(get("/order/" + summary.getId())
+                .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andReturn();
+
+        content = getOrder.getResponse().getContentAsString();
+        String expectedContent = objectMapper.writeValueAsString(orders);
         assertThat(content, equalTo(expectedContent));
 
     }
