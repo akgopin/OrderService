@@ -10,4 +10,4 @@ spring boot
 
 ### How to run
 
-This is a maven project checkout the project and simply run the 
+This is a maven project checkout the project and simply run the main program main/java/com.aexp.order.service/OrderApplication.java
