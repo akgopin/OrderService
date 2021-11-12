@@ -24,4 +24,13 @@ public class OrderRepoTest {
         OrderRepo orderRepo = new OrderRepoImpl();
         assertThat(orderRepo.findOrder(1),equalTo(Optional.empty()));
     }
+
+    @Test
+    public void TestGetAllOrders() {
+        OrderRepo orderRepo = new OrderRepoImpl();
+        Order order = new Order();
+        orderRepo.storeOrder(order);
+        assertThat(orderRepo.findAllOrders().get(0),equalTo(order));
+
+    }
 }

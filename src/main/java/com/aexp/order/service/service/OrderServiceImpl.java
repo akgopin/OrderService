@@ -9,6 +9,8 @@ import com.aexp.order.service.domain.offer;
 import com.aexp.order.service.repository.OrderRepo;
 import com.aexp.order.service.controller.domain.item;
 
+import java.util.List;
+
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -44,6 +46,11 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Order getOrder(Integer orderId) throws IllegalArgumentException {
         return orderRepo.findOrder(orderId).orElseThrow(IllegalArgumentException::new);
+    }
+
+    @Override
+    public List<Order> getAllOrders() {
+        return orderRepo.findAllOrders();
     }
 
     private float getTotalCost(float totalCost, float itemCost) {

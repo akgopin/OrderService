@@ -4,8 +4,10 @@ import com.aexp.order.service.controller.domain.Order;
 import org.springframework.stereotype.Repository;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Repository
 public class OrderRepoImpl implements OrderRepo {
@@ -13,6 +15,11 @@ public class OrderRepoImpl implements OrderRepo {
     private Map<Integer, Order> orderStore = new HashMap();
     private int id = 0;
 
+
+    @Override
+    public List<Order> findAllOrders() {
+        return orderStore.values().stream().collect(Collectors.toList());
+    }
 
     @Override
     public Optional<Order> findOrder(Integer orderId) {

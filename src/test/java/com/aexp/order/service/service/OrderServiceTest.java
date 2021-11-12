@@ -97,4 +97,18 @@ public class OrderServiceTest {
         orderService.getOrder(1);
     }
 
+    @Test
+    public void TestGetAllOrders() {
+        OrderService orderService = new OrderServiceImpl(new ProductRepoImpl(), new OrderRepoImpl());
+        List<item> items = new ArrayList<>();
+        items.add(new item("orange", 9,10.0F));
+        items.add(new item("apple", 17,20.0F));
+        Order order = new Order();
+        order.setItems(items);
+        orderService.generateSummary(order);
+        orderService.getAllOrders();
+
+        assertThat(order, equalTo(orderService.getAllOrders().get(0)));
+
+    }
 }

@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 
 @RestController
 public class OrderController {
@@ -21,7 +23,13 @@ public class OrderController {
 
     @RequestMapping(value = "/orders/{id}", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
-    public Order receiveOrders(@PathVariable int id) {
+    public Order getOrderById(@PathVariable int id) {
         return orderService.getOrder(id);
+    }
+
+    @RequestMapping(value = "/orders", method = RequestMethod.GET)
+    @ResponseStatus(HttpStatus.OK)
+    public List<Order> getAllOrders() {
+        return orderService.getAllOrders();
     }
 }

@@ -26,6 +26,8 @@ import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.greaterThanOrEqualTo;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -101,6 +103,31 @@ public class orderControllerTest {
         String expectedContent = objectMapper.writeValueAsString(expectedSummary);
 
         assertThat(content, equalTo(expectedContent));
+
+
+    }
+
+    @Test
+    public void testGetAllOrders() throws Exception {
+        ObjectMapper objectMapper = new ObjectMapper();
+        Order order = createOrder();
+         mockMvc.perform(post("/orders")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(order)))
+                .andDo(print())
+                .andExpect(status().isCreated());
+
+        //Retrieving the order that was created and asserting on the response
+        MvcResult getOrder = mockMvc.perform(get("/orders")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String content = getOrder.getResponse().getContentAsString();
+        List<Order> orders = objectMapper.readValue(content, List.class);
+
+        assertThat(orders.size(), greaterThanOrEqualTo(1));
 
 
     }
