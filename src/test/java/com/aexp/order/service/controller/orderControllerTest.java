@@ -2,8 +2,7 @@ package com.aexp.order.service.controller;
 
 
 import com.aexp.order.service.controller.domain.Order;
-import com.aexp.order.service.controller.domain.OrderSummary;
-import com.aexp.order.service.controller.domain.Summary;
+import com.aexp.order.service.controller.domain.item;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
@@ -53,56 +52,68 @@ public class orderControllerTest {
     @Test
     public void testAcceptValidOrder() throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
-        Order order = new Order("orange", 10);
-        List<Order> orders = new ArrayList<>();
-        orders.add(order);
-        MvcResult result = mockMvc.perform(post("/order")
+        Order order = createOrder();
+        MvcResult result = mockMvc.perform(post("/orders")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(orders)))
+                .content(objectMapper.writeValueAsString(order)))
                 .andDo(print())
                 .andExpect(status().isCreated())
                 .andReturn();
 
-        List<OrderSummary> orderSummaries = new ArrayList<>();
-        orderSummaries.add(new OrderSummary(25, 250.0F, "orange", 15));
-
-
         String content = result.getResponse().getContentAsString();
-        Summary actualSummary = objectMapper.readValue(content,Summary.class);
-        Summary expectedSummary = new Summary(orderSummaries, 250.0F, actualSummary.getId());
+        Order actualSummary = objectMapper.readValue(content, Order.class);
+
+
+        List<item> expectedItems = new ArrayList<>();
+        expectedItems.add(new item("orange", 15, 25.0F));
+        Order expectedSummary = new Order(actualSummary.getId(), expectedItems, 250.0F);
         String expectedContent = objectMapper.writeValueAsString(expectedSummary);
+
         assertThat(content, equalTo(expectedContent));
 
     }
 
+
     @Test
     public void testGetOrder() throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
-        Order order = new Order("orange", 10);
-        List<Order> orders = new ArrayList<>();
-        orders.add(order);
-        MvcResult result = mockMvc.perform(post("/order")
+        Order order = createOrder();
+        MvcResult result = mockMvc.perform(post("/orders")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(orders)))
+                .content(objectMapper.writeValueAsString(order)))
                 .andDo(print())
                 .andExpect(status().isCreated())
                 .andReturn();
 
-
         String content = result.getResponse().getContentAsString();
-        Summary summary = objectMapper.readValue(content,Summary.class);
+        Order actualSummary = objectMapper.readValue(content, Order.class);
 
         //Retrieving the order that was created and asserting on the response
-        MvcResult getOrder = mockMvc.perform(get("/order/" + summary.getId())
+        MvcResult getOrder = mockMvc.perform(get("/orders/" + actualSummary.getId())
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andReturn();
 
-        content = getOrder.getResponse().getContentAsString();
-        String expectedContent = objectMapper.writeValueAsString(orders);
+        List<item> expectedItems = new ArrayList<>();
+        expectedItems.add(new item("orange", 15, 25.0F));
+        Order expectedSummary = new Order(actualSummary.getId(), expectedItems, 250.0F);
+        String expectedContent = objectMapper.writeValueAsString(expectedSummary);
+
         assertThat(content, equalTo(expectedContent));
 
+
+    }
+
+    private Order createOrder() {
+        List<item> items = new ArrayList<>();
+        item item = new item();
+        item.setQuantity(10);
+        item.setName("orange");
+        items.add(item);
+        Order order = new Order();
+        order.setItems(items);
+        return order;
     }
 
 }

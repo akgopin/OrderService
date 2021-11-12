@@ -1,35 +1,48 @@
 package com.aexp.order.service.controller.domain;
 
 
+import java.util.List;
+
 public class Order {
 
-    private String item;
-    private Integer quantity;
+    private Integer id;
+    private List<item> items;
+    private float total;
 
-    public Order(String item, Integer quantity) {
-        this.item = item;
-        this.quantity = quantity;
+    public Order(Integer id, List<item> items, float total) {
+        this.id = id;
+        this.items = items;
+        this.total = total;
     }
+
 
     public Order() {
+        
     }
 
 
-    public String getItem() {
-        return item;
+    public float getTotal() {
+        return total;
     }
 
-
-    public int getQuantity() {
-        return quantity;
+    public void setTotal(float total) {
+        this.total = total;
     }
 
-    public void setItem(String item) {
-        this.item = item;
+    public Integer getId() {
+        return id;
     }
 
-    public void setQuantity(Integer quantity) {
-        this.quantity = quantity;
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public List<item> getItems() {
+        return items;
+    }
+
+    public void setItems(List<item> items) {
+        this.items = items;
     }
 
 

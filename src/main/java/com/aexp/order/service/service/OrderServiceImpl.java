@@ -1,17 +1,14 @@
 package com.aexp.order.service.service;
 
 import com.aexp.order.service.controller.domain.Order;
-import com.aexp.order.service.controller.domain.Summary;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.aexp.order.service.repository.productRepo;
 import com.aexp.order.service.domain.product;
-import com.aexp.order.service.controller.domain.OrderSummary;
 import com.aexp.order.service.domain.offer;
 import com.aexp.order.service.repository.OrderRepo;
+import com.aexp.order.service.controller.domain.item;
 
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -27,25 +24,25 @@ public class OrderServiceImpl implements OrderService {
 
 
     @Override
-    public Summary generateSummary(List<Order> orders) throws IllegalArgumentException {
-        List<OrderSummary> orderSummaries = new ArrayList<>();
+    public Order generateSummary(Order order) throws IllegalArgumentException {
         float totalCost = 0;
-        int id = orderRepo.storeOrder(orders);
-        for (Order order : orders) {
-            product pro = productRepo.findProduct(order.getItem()).orElseThrow(IllegalArgumentException::new);
-            float itemCost = calculateCostPerItem(order, pro);
-            int quantity = applyOffer(pro.getOffer(), order.getQuantity());
+        for (item item : order.getItems()) {
+            product pro = productRepo.findProduct(item.getName()).orElseThrow(IllegalArgumentException::new);
+            float itemCost = calculateCostPerItem(item, pro);
+            int quantity = applyOffer(pro.getOffer(), item.getQuantity());
             totalCost = getTotalCost(totalCost, itemCost);
             //preparing summary
-            OrderSummary orderSummary = new OrderSummary(pro.getPrice(), itemCost, pro.getName(), quantity);
-            orderSummaries.add(orderSummary);
+            item.setPrice(pro.getPrice());
+            item.setQuantity(quantity);
 
         }
-        return new Summary(orderSummaries, totalCost, id);
+        order.setTotal(totalCost);
+        orderRepo.storeOrder(order);
+        return order;
     }
 
     @Override
-    public List<Order> getOrder(Integer orderId) throws IllegalArgumentException {
+    public Order getOrder(Integer orderId) throws IllegalArgumentException {
         return orderRepo.findOrder(orderId).orElseThrow(IllegalArgumentException::new);
     }
 
@@ -54,8 +51,8 @@ public class OrderServiceImpl implements OrderService {
         return totalCost;
     }
 
-    private float calculateCostPerItem(Order order, product pro) {
-        return order.getQuantity() * pro.getPrice();
+    private float calculateCostPerItem(item item, product pro) {
+        return item.getQuantity() * pro.getPrice();
     }
 
     private int applyOffer(offer offer, int quantity) {
